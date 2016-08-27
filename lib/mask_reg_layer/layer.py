@@ -35,9 +35,8 @@ class MaskLossLayer(caffe.Layer):
         self._name_to_top_map['loss'] = idx
         idx += 1
         self.count=0
-        self.output=open(cfg.TRAIN_SEGLOSS_OUTPUT,'w')
         self.losscount=0
-        self.smoothloss=0.
+        self.smoothloss=0.0  
         self.losscache=np.ones((100,1),dtype='float32')*-1
                 
         print 'MaskRegLayer: name_to_top:', self._name_to_top_map
@@ -70,8 +69,9 @@ class MaskLossLayer(caffe.Layer):
             self.losscache[self.count]=loss
         self.count=(self.count+1)%100
         if self.count==0:
-            self.output.write('{}\n'%self.smoothloss)
-
+            output=open(cfg.TRAIN_SEGLOSS_OUTPUT,'a')
+            output.write('%f\n'%self.smoothloss)
+            output.close()
 
     def backward(self, top, propagate_down, bottom):
         """This layer does  propagate gradients."""
