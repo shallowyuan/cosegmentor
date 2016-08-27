@@ -13,6 +13,7 @@ MaskLossLayer implements a Caffe Python layer.
 import caffe
 import numpy as np
 import yaml
+from fast_rcnn.config import cfg
 
 
 class MaskLossLayer(caffe.Layer):
@@ -37,13 +38,14 @@ class MaskLossLayer(caffe.Layer):
         self.output=open(cfg.TRAIN_SEGLOSS_OUTPUT,'w')
         self.losscount=0
         self.smoothloss=0.
-        self.losscache=np.ones((100,1),dtype=float32)*-1
+        self.losscache=np.ones((100,1),dtype='float32')*-1
                 
         print 'MaskRegLayer: name_to_top:', self._name_to_top_map
         assert len(top) == len(self._name_to_top_map)
 
     def forward(self, bottom, top):
         """Get blobs and copy them into this layer's top blob vector."""
+
         predict=bottom[0].data.squeeze()
         pweights=bottom[1].data.squeeze()
         labels =np.where(pweights>0)[0]
@@ -64,7 +66,7 @@ class MaskLossLayer(caffe.Layer):
             self.losscache[self.count]=loss
             self.smoothloss=(self.count*self.smoothloss+loss)/(self.count+1)
         else:
-            self.smoothloss+=(loss-self.losscache[self.counts])/100
+            self.smoothloss+=(loss-self.losscache[self.count])/100
             self.losscache[self.count]=loss
         self.count=(self.count+1)%100
         if self.count==0:

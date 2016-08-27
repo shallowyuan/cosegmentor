@@ -8,7 +8,7 @@ from gradient_check_util import GradientChecker
 class TestGradientChecker(unittest.TestCase):
 
     def setUp(self):
-        shape_data = (128, 900, 1, 1)
+        shape_data = (128, 25, 1, 1)
         shape_weights=(128,1, 1, 1)
         pdata = caffe.Blob(shape_data)
         mask = caffe.Blob(shape_data)

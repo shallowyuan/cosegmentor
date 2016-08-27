@@ -127,6 +127,8 @@ __C.MARGIN = 0
 
 __C.TRAIN.SEGS = True
 
+__C.TRAIN_SEGLOSS_OUTPUT = 'segloss.txt'
+
 
 #
 # Testing options
